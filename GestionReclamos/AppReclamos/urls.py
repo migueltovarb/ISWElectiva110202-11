@@ -3,5 +3,5 @@ from .views import  ReclamosApiView
 
 urlpatterns = [
     path('crear', ReclamosApiView.as_view()),
-    path('obtener-todos', ReclamosApiView.as_view()),
+    path('listar-reclamos', ReclamosApiView.as_view()),
 ]

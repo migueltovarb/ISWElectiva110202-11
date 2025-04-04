@@ -26,3 +26,7 @@ class ReclamosApiView(APIView):
         lista_reclamos=Reclamo.objects.all()
         serializer_reclamos=reclamo_serializer(lista_reclamos, many=True)
         return Response(serializer_reclamos.data, status=status.HTTP_200_OK)
+    
+
+        
+        
