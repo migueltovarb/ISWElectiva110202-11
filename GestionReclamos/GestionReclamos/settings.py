@@ -37,18 +37,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'AppReclamos'
+    'AppReclamos',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'GestionReclamos.urls'
 
@@ -79,7 +82,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'reclamos',
         'USER': 'postgres',
-        'PASSWORD': 'jacobo',
+        'PASSWORD': 'Vale0704+',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -126,3 +129,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # Si usas Vite en React
+]
