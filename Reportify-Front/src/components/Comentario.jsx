@@ -12,7 +12,6 @@ const Comentario = ({ claim }) => {
       comentario: newComment,
     };
 
-    // Aquí se ajusta la URL para usar el reclamo_id en la ruta
     axios
       .put(`${import.meta.env.VITE_API_URL}/comentar/${claim.id}/`, updatedClaim)
       .then(() => {
