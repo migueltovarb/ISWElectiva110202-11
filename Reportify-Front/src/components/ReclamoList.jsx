@@ -1,99 +1,177 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import VisualizarReclamo from "./VisualizarReclamo";
 
 const ClaimList = () => {
-    const [claims, setClaims] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [searchTerm, setSearchTerm] = useState("");
+  const [claims, setClaims] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [claimSeleccionado, setClaimSeleccionado] = useState(null);
 
-    useEffect(() => {
+  const [asunto, setAsunto] = useState("");
+  const [empresa, setEmpresa] = useState("Servidentrega");
+  const [descripcion, setDescripcion] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    fetchClaims();
+  }, []);
+
+  const fetchClaims = () => {
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/Reclamo/listar-reclamos`)
+      .then((response) => {
+        setClaims(response.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError("No se pudieron cargar los reclamos.");
+        setLoading(false);
+      });
+  };
+
+  const handleCreate = (e) => {
+    e.preventDefault();
+    const nuevoReclamo = { asunto, empresa, descripcion };
+
+    axios
+      .post(`${import.meta.env.VITE_API_URL}/Reclamo/crear`, nuevoReclamo)
+      .then(() => {
         fetchClaims();
-    }, []);
+        setAsunto("");
+        setEmpresa("Servidentrega");
+        setDescripcion("");
+        setShowForm(false);
+      })
+      .catch(() => {
+        alert("Error al crear el reclamo.");
+      });
+  };
 
-    const fetchClaims = () => {
-        axios
-            .get(`${import.meta.env.VITE_API_URL}/Reclamo/listar-reclamos`)
-            .then((response) => {
-                setClaims(response.data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error("Error al obtener los reclamos", error);
-                setError("No se pudieron cargar los reclamos.");
-                setLoading(false);
-            });
-    };
+  const filteredClaims = claims.filter((claim) =>
+    claim.asunto?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    claim.descripcion?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    claim.empresa?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    claim.titulo?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-    const handleDeleteClaim = (id) => {
-        if (!window.confirm("¿Estás seguro de que deseas eliminar el reclamo?")) return;
+  if (loading) return <p className="text-center text-gray-500">Cargando reclamos...</p>;
+  if (error) return <p className="text-center text-red-500">{error}</p>;
 
-        axios
-            .delete(`${import.meta.env.VITE_API_URL}/reclamo/eliminar/${id}`)
-            .then(() => {
-                setClaims(claims.filter(claim => claim.id !== id));
-            })
-            .catch((error) => {
-                console.error("Error al eliminar el reclamo:", error);
-            });
-    };
-
-    const getColor = (status) => {
-        const colors = {
-            "pendiente": "bg-yellow-500",
-            "en proceso": "bg-blue-500",
-            "resuelto": "bg-green-500",
-        };
-        return colors[status] || "bg-gray-500";
-    };
-
-    const filteredClaims = claims.filter(claim =>
-        (claim.titulo?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
-        (claim.descripcion?.toLowerCase().includes(searchTerm.toLowerCase()) || false)
-    );
-
-    if (loading) return <p className="text-center text-gray-500">Cargando reclamos...</p>;
-    if (error) return <p className="text-center text-red-500">{error}</p>;
-
+  // Vista para reclamo seleccionado
+  if (claimSeleccionado) {
     return (
-        <div className="max-w-4xl mx-auto mt-10 p-5 bg-white shadow-md rounded-lg">
-            <h2 className="text-2xl font-bold text-center mb-4 text-blue-600">Lista de Reclamos</h2>
-
-            <input
-                type="text"
-                placeholder="Buscar por título o descripción..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full mb-5 p-2 border border-gray-300 rounded"
-            />
-
-            {filteredClaims.length === 0 ? (
-                <p className="text-center text-gray-500">No se encontraron reclamos.</p>
-            ) : (
-                <ul className="space-y-4">
-                    {filteredClaims.map((claim) => (
-                        <li key={claim.id} className="p-4 border rounded-lg shadow-sm flex items-center justify-between">
-                            <div>
-                                <p className="text-lg font-semibold">{claim.titulo}</p>
-                                <p className="text-gray-600">Descripción: {claim.descripcion}</p>
-                                <p className="text-gray-600">Fecha: {claim.fecha}</p>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                                <span className={`w-6 h-6 rounded-full ${getColor(claim.estado)}`}>&nbsp;</span>
-
-                                <button
-                                    onClick={() => handleDeleteClaim(claim.id)}
-                                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                                >
-                                    Eliminar
-                                </button>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
+      <VisualizarReclamo
+        claim={claimSeleccionado}
+        onBack={() => setClaimSeleccionado(null)}
+        onComentarioGuardado={fetchClaims}
+      />
     );
+  }
+
+  return (
+    <div className="max-w-5xl mx-auto mt-10 p-8 bg-gradient-to-br from-white to-blue-50 shadow-2xl rounded-2xl border border-blue-200">
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-3xl font-bold text-blue-700">
+          {showForm ? "Crear Reclamo" : "Lista de Reclamos"}
+        </h2>
+        <button
+          onClick={() => {
+            setShowForm(!showForm);
+            setClaimSeleccionado(null);
+          }}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-lg transition-all"
+        >
+          {showForm ? "Volver a la Lista" : "Agregar Reclamo"}
+        </button>
+      </div>
+
+      {!showForm && (
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="Buscar por asunto, empresa o descripción..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+      )}
+
+      {showForm ? (
+        <form onSubmit={handleCreate} className="space-y-6">
+          <div>
+            <label className="block text-gray-700 font-semibold mb-1">Asunto</label>
+            <input
+              type="text"
+              value={asunto}
+              onChange={(e) => setAsunto(e.target.value)}
+              className="w-full border border-blue-300 p-2 rounded-lg"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 font-semibold mb-1">Empresa</label>
+            <select
+              value={empresa}
+              onChange={(e) => setEmpresa(e.target.value)}
+              className="w-full border border-blue-300 p-2 rounded-lg"
+            >
+              <option value="Servidentrega">Servidentrega</option>
+              <option value="InterRapidisimo">InterRapidisimo</option>
+              <option value="Star Store">Star Store</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-gray-700 font-semibold mb-1">Descripción</label>
+            <textarea
+              value={descripcion}
+              onChange={(e) => setDescripcion(e.target.value)}
+              className="w-full border border-blue-300 p-2 rounded-lg"
+              rows="4"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow-lg transition-all"
+          >
+            Guardar Reclamo
+          </button>
+        </form>
+      ) : filteredClaims.length === 0 ? (
+        <p className="text-center text-gray-500">No hay reclamos disponibles.</p>
+      ) : (
+        <ul className="space-y-4">
+          {filteredClaims.map((claim) => (
+            <li
+              key={claim.id}
+              className="bg-white border border-blue-100 p-5 rounded-xl shadow hover:shadow-md transition"
+            >
+              <h3 className="text-xl font-semibold text-blue-800 mb-1">
+                Asunto: {claim.asunto || "No disponible"}
+              </h3>
+              <p className="text-gray-700">Empresa: <span className="font-medium">{claim.empresa}</span></p>
+              <p className="text-gray-700">Fecha de Creación: {new Date(claim.fecha_creacion).toLocaleDateString()}</p>
+              <p className="text-gray-700">ID: {claim.id}</p>
+              <p className="text-gray-600 mt-2">Descripción: {claim.descripcion}</p>
+
+              <button
+                onClick={() => setClaimSeleccionado(claim)}
+                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Visualizar
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 };
 
 export default ClaimList;
