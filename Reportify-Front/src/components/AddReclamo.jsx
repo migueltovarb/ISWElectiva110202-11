@@ -1,109 +1,90 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import { useState } from "react";
+import axios from "axios";
 
-const AddReclamo = () => {
-    const [empresa, setEmpresa] = useState('');
-    const [comentario, setComentario] = useState('');
-    const [mensajeError, setMensajeError] = useState('');
-    const [mensajeExito, setMensajeExito] = useState('');
-    const history = useHistory();
+const AddReclamo = ({ onReclamoCreado }) => {
+  const [asunto, setAsunto] = useState("");
+  const [empresa, setEmpresa] = useState("Servidentrega");
+  const [descripcion, setDescripcion] = useState("");
+  const [mensaje, setMensaje] = useState("");
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    const empresas = [
-        { id: 1, nombre: 'Servidentrega' },
-        { id: 2, nombre: 'InterRapidísimo' },
-        { id: 3, nombre: 'Star Store' }
-    ];
-
-    
-    const handleEmpresaChange = (event) => {
-        setEmpresa(event.target.value);
+    const nuevoReclamo = {
+      asunto: asunto,
+      empresa: empresa,
+      descripcion: descripcion,
     };
 
-    
-    const handleComentarioChange = (event) => {
-        setComentario(event.target.value);
-    };
+    axios
+      .post(`${import.meta.env.VITE_API_URL}/Reclamo/crear`, nuevoReclamo)
+      .then((response) => {
+        setMensaje("Reclamo creado exitosamente.");
+        setAsunto("");
+        setEmpresa("Servidentrega");
+        setDescripcion("");
 
-   
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        
-        if (!empresa || !comentario) {
-            setMensajeError('Todos los campos son obligatorios.');
-            return;
+        if (onReclamoCreado) {
+          onReclamoCreado(); // Para refrescar la lista
         }
+      })
+      .catch((error) => {
+        console.error("Error al crear el reclamo:", error);
+        setMensaje("Hubo un error al crear el reclamo.");
+      });
+  };
 
-        const data = {
-            empresa_id: empresa,
-            comentario: comentario
-        };
+  return (
+    <div className="max-w-xl mx-auto mt-10 p-5 bg-white shadow-md rounded-lg">
+      <h2 className="text-2xl font-bold mb-4 text-green-600">Crear Reclamo</h2>
 
-        try {
-            
-            const response = await axios.post('http://localhost:8000/api/Reclamo/crear', data);
+      {mensaje && <p className="text-sm text-center text-blue-500">{mensaje}</p>}
 
-            
-            setMensajeExito('Reclamo registrado con éxito.');
-            setMensajeError('');
-            setTimeout(() => {
-                history.push('/');  
-            }, 2000);
-        } catch (error) {
-            
-            setMensajeError('Hubo un error al registrar el reclamo. Intenta nuevamente.');
-            setMensajeExito('');
-        }
-    };
-
-    return (
-        <div className="add-reclamo-container">
-            <h2>Registrar un Reclamo</h2>
-
-            {/* Mostrar mensaje de error si hay */}
-            {mensajeError && <div className="error-message">{mensajeError}</div>}
-
-            {/* Mostrar mensaje de éxito si el reclamo fue registrado */}
-            {mensajeExito && <div className="success-message">{mensajeExito}</div>}
-
-            <form onSubmit={handleSubmit}>
-                {/* Selección de la empresa */}
-                <div>
-                    <label htmlFor="empresa">Seleccionar Empresa:</label>
-                    <select
-                        id="empresa"
-                        value={empresa}
-                        onChange={handleEmpresaChange}
-                    >
-                        <option value="">Seleccione una empresa</option>
-                        {empresas.map((empresa) => (
-                            <option key={empresa.id} value={empresa.id}>
-                                {empresa.nombre}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                {/* Campo de comentario */}
-                <div>
-                    <label htmlFor="comentario">Comentario:</label>
-                    <textarea
-                        id="comentario"
-                        value={comentario}
-                        onChange={handleComentarioChange}
-                        placeholder="Escribe tu reclamo aquí..."
-                    ></textarea>
-                </div>
-
-                {/* Botón de enviar */}
-                <div>
-                    <button type="submit">Agregar Reclamo</button>
-                </div>
-            </form>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-gray-700">Asunto</label>
+          <input
+            type="text"
+            value={asunto}
+            onChange={(e) => setAsunto(e.target.value)}
+            className="w-full border border-gray-300 rounded p-2"
+            required
+          />
         </div>
-    );
+
+        <div>
+          <label className="block text-gray-700">Empresa</label>
+          <select
+            value={empresa}
+            onChange={(e) => setEmpresa(e.target.value)}
+            className="w-full border border-gray-300 rounded p-2"
+          >
+            <option value="Servidentrega">Servidentrega</option>
+            <option value="InterRapidisimo">InterRapidisimo</option>
+            <option value="Star Store">Star Store</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-gray-700">Descripción</label>
+          <textarea
+            value={descripcion}
+            onChange={(e) => setDescripcion(e.target.value)}
+            className="w-full border border-gray-300 rounded p-2"
+            rows="4"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
+        >
+          Enviar Reclamo
+        </button>
+      </form>
+    </div>
+  );
 };
 
 export default AddReclamo;
