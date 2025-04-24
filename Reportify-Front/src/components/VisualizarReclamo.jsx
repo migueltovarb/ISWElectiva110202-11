@@ -7,16 +7,24 @@ const VisualizarReclamo = ({ claim, onBack, onComentarioGuardado }) => {
   const [comentarios, setComentarios] = useState(claim.comentarios || []);
 
   const handleGuardarComentario = () => {
-    if (!comentario.trim()) return;
+    if (!comentario.trim()) return; // Evita comentarios vacíos
+
+    const fechaComentario = new Date().toISOString(); // Usamos toISOString para un formato adecuado
 
     axios
       .post(`${import.meta.env.VITE_API_URL}/Reclamo/comentar/${claim.id}/`, {
         texto: comentario,
+        fecha: fechaComentario, // Enviamos la fecha en formato ISO
       })
       .then((res) => {
-        setComentarios(res.data.comentarios);
-        setComentario("");
-        onComentarioGuardado();
+        // Verificar que la respuesta contiene los comentarios actualizados
+        if (res.data && res.data.comentarios) {
+          setComentarios(res.data.comentarios); // Actualiza los comentarios
+          setComentario(""); // Limpia el campo de texto
+          onComentarioGuardado(); // Actualiza la lista de reclamos
+        } else {
+          alert("No se pudieron guardar los comentarios correctamente.");
+        }
       })
       .catch(() => {
         alert("Error al guardar el comentario.");
@@ -30,12 +38,51 @@ const VisualizarReclamo = ({ claim, onBack, onComentarioGuardado }) => {
       </h1>
 
       <div className="bg-white shadow-md rounded-lg p-6">
-        <p className="text-lg text-gray-800 font-semibold mb-1">{claim.empresa}</p>
-        <h2 className="text-xl font-bold text-gray-900 mb-4">{claim.asunto}</h2>
+        {/* Título de Empresa */}
+        <p className="text-lg text-gray-800 font-semibold mb-1">Empresa:</p>
+        <p className="text-lg text-gray-700 mb-4">{claim.empresa}</p>
 
-        <p className="text-gray-700 leading-relaxed mb-6">
-          {claim.descripcion}
+        {/* Título de Asunto */}
+        <h2
+          className="text-xl font-bold text-gray-900 mb-4"
+          style={{
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-word",
+          }}
+        >
+          <span className="font-semibold">Asunto:</span> {claim.asunto}
+        </h2>
+
+        {/* Título de Descripción */}
+        <p
+          className="text-gray-700 leading-relaxed mb-6"
+          style={{
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-word",
+          }}
+        >
+          <span className="font-semibold">Descripción:</span> {claim.descripcion}
         </p>
+
+        {/* Mostrar los comentarios */}
+        <div className="mt-8">
+          <h3 className="font-semibold text-gray-800">Comentarios:</h3>
+          <ul className="space-y-4 mt-4">
+            {comentarios.length === 0 ? (
+              <p className="text-gray-500">No hay comentarios aún.</p>
+            ) : (
+              comentarios.map((comentario, index) => (
+                <li key={index} className="border-t border-gray-200 pt-4">
+                  <p className="text-gray-700">{comentario.texto}</p>
+                </li>
+              ))
+            )}
+          </ul>
+        </div>
 
         <div className="mb-4">
           <label className="block text-gray-800 font-semibold mb-2">

@@ -73,7 +73,7 @@ const ClaimList = () => {
     <div className="max-w-5xl mx-auto mt-10 px-6">
       <h1 className="text-2xs text-green-800">Bienvenidos al Sistema de Reclamos</h1>
       <h1 className="text-3xl font-serif font-semibold text-gray-800 mb-8 border-b pb-2">
-        Tus Reclamo
+        Tus Reclamos
       </h1>
 
       <div className="flex justify-end mb-6">
@@ -134,6 +134,12 @@ const ClaimList = () => {
               className="w-full border border-gray-300 p-2 rounded"
               rows="4"
               required
+              style={{
+                wordWrap: "break-word",
+                overflowWrap: "break-word",
+                whiteSpace: "pre-wrap", // Asegura que los saltos de línea sean respetados
+                wordBreak: "break-word", // Rompe las palabras largas
+              }}
             />
           </div>
 
@@ -152,13 +158,27 @@ const ClaimList = () => {
             <li
               key={claim.id}
               className="bg-white border border-gray-200 p-6 rounded-lg"
+              style={{
+                wordWrap: "break-word",
+                overflowWrap: "break-word",
+                wordBreak: "break-word", // Evita el desbordamiento de palabras largas
+              }}
             >
               <div className="flex justify-between">
                 <h3 className="text-lg font-bold text-gray-800">{claim.empresa}</h3>
                 <span className="text-sm text-gray-500 font-mono">ID {claim.id}</span>
               </div>
 
-              <p className="text-gray-600 mt-2">{claim.descripcion}</p>
+              <p
+                className="text-gray-600 mt-2"
+                style={{
+                  wordWrap: "break-word",
+                  overflowWrap: "break-word",
+                  wordBreak: "break-word", // Rompe palabras largas
+                }}
+              >
+                {claim.descripcion}
+              </p>
 
               <div className="flex justify-between items-center mt-4">
                 <button
