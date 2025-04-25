@@ -49,6 +49,12 @@ const ClaimList = () => {
       });
   };
 
+  const handleCancel = () => {
+    setAsunto("");
+    setDescripcion("");
+    setShowForm(false); 
+  };
+
   const filteredClaims = claims.filter((claim) =>
     claim.asunto?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     claim.descripcion?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -137,18 +143,27 @@ const ClaimList = () => {
               style={{
                 wordWrap: "break-word",
                 overflowWrap: "break-word",
-                whiteSpace: "pre-wrap", // Asegura que los saltos de línea sean respetados
-                wordBreak: "break-word", // Rompe las palabras largas
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
               }}
             />
           </div>
 
-          <button
-            type="submit"
-            className="bg-[#3f622e] hover:bg-[#325224] text-white px-6 py-2 rounded shadow-md"
-          >
-            Guardar Reclamo
-          </button>
+          <div className="flex justify-end space-x-4 mt-4">
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="bg-[#3f622e] hover:bg-[#325224] text-white px-6 py-2 rounded shadow-md"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="bg-[#3f622e] hover:bg-[#325224] text-white px-6 py-2 rounded shadow-md"
+            >
+              Enviar
+            </button>
+          </div>
         </form>
       ) : filteredClaims.length === 0 ? (
         <p className="text-center text-gray-500">No hay reclamos disponibles.</p>
@@ -161,7 +176,7 @@ const ClaimList = () => {
               style={{
                 wordWrap: "break-word",
                 overflowWrap: "break-word",
-                wordBreak: "break-word", // Evita el desbordamiento de palabras largas
+                wordBreak: "break-word",
               }}
             >
               <div className="flex justify-between">
@@ -174,7 +189,7 @@ const ClaimList = () => {
                 style={{
                   wordWrap: "break-word",
                   overflowWrap: "break-word",
-                  wordBreak: "break-word", // Rompe palabras largas
+                  wordBreak: "break-word",
                 }}
               >
                 {claim.descripcion}

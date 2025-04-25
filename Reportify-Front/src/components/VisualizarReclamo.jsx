@@ -1,4 +1,3 @@
-// src/components/VisualizarReclamo.jsx
 import { useState } from "react";
 import axios from "axios";
 
@@ -7,21 +6,21 @@ const VisualizarReclamo = ({ claim, onBack, onComentarioGuardado }) => {
   const [comentarios, setComentarios] = useState(claim.comentarios || []);
 
   const handleGuardarComentario = () => {
-    if (!comentario.trim()) return; // Evita comentarios vacíos
+    if (!comentario.trim()) return;
 
-    const fechaComentario = new Date().toISOString(); // Usamos toISOString para un formato adecuado
+    const fechaComentario = new Date().toISOString();
 
     axios
       .post(`${import.meta.env.VITE_API_URL}/Reclamo/comentar/${claim.id}/`, {
         texto: comentario,
-        fecha: fechaComentario, // Enviamos la fecha en formato ISO
+        fecha: fechaComentario,
       })
       .then((res) => {
-        // Verificar que la respuesta contiene los comentarios actualizados
+
         if (res.data && res.data.comentarios) {
-          setComentarios(res.data.comentarios); // Actualiza los comentarios
-          setComentario(""); // Limpia el campo de texto
-          onComentarioGuardado(); // Actualiza la lista de reclamos
+          setComentarios(res.data.comentarios); 
+          setComentario("");
+          onComentarioGuardado(); 
         } else {
           alert("No se pudieron guardar los comentarios correctamente.");
         }
@@ -38,11 +37,11 @@ const VisualizarReclamo = ({ claim, onBack, onComentarioGuardado }) => {
       </h1>
 
       <div className="bg-white shadow-md rounded-lg p-6">
-        {/* Título de Empresa */}
+        {}
         <p className="text-lg text-gray-800 font-semibold mb-1">Empresa:</p>
         <p className="text-lg text-gray-700 mb-4">{claim.empresa}</p>
 
-        {/* Título de Asunto */}
+        {}
         <h2
           className="text-xl font-bold text-gray-900 mb-4"
           style={{
@@ -55,7 +54,7 @@ const VisualizarReclamo = ({ claim, onBack, onComentarioGuardado }) => {
           <span className="font-semibold">Asunto:</span> {claim.asunto}
         </h2>
 
-        {/* Título de Descripción */}
+        {}
         <p
           className="text-gray-700 leading-relaxed mb-6"
           style={{
@@ -68,7 +67,7 @@ const VisualizarReclamo = ({ claim, onBack, onComentarioGuardado }) => {
           <span className="font-semibold">Descripción:</span> {claim.descripcion}
         </p>
 
-        {/* Mostrar los comentarios */}
+        {}
         <div className="mt-8">
           <h3 className="font-semibold text-gray-800">Comentarios:</h3>
           <ul className="space-y-4 mt-4">
@@ -95,18 +94,18 @@ const VisualizarReclamo = ({ claim, onBack, onComentarioGuardado }) => {
             onChange={(e) => setComentario(e.target.value)}
             placeholder="Es importante para mí recibir este pedido a la brevedad posible..."
           />
+        </div>
+
+        <div className="flex justify-end mt-6 space-x-4">
           <button
             onClick={handleGuardarComentario}
-            className="mt-3 bg-green-700 text-white px-5 py-2 rounded shadow hover:bg-green-800 transition"
+            className="bg-green-700 text-white px-6 py-2 rounded shadow hover:bg-green-800 transition"
           >
             Agregar
           </button>
-        </div>
-
-        <div className="flex justify-end mt-6">
           <button
             onClick={onBack}
-            className="bg-[#3E4D35] text-white px-6 py-2 rounded shadow hover:bg-[#2f3a28] transition"
+            className="bg-green-700 text-white px-6 py-2 rounded shadow hover:bg-green-800 transition"
           >
             Cancelar
           </button>

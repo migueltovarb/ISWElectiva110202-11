@@ -25,7 +25,7 @@ const AddReclamo = ({ onReclamoCreado }) => {
         setDescripcion("");
 
         if (onReclamoCreado) {
-          onReclamoCreado(); // Para refrescar la lista
+          onReclamoCreado(); 
         }
       })
       .catch((error) => {

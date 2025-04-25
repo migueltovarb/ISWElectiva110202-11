@@ -31,7 +31,7 @@ const Comentario = ({ claim }) => {
       <p><strong>Fecha de creación:</strong> {claim.fecha_creacion}</p>
       <p><strong>Empresa:</strong> {claim.empresa}</p>
 
-      {/* Comentario adicional */}
+      {}
       <div className="mt-4">
         <label className="block text-gray-700">Comentario Adicional</label>
         <textarea
