@@ -20,5 +20,5 @@ from AppReclamos import urls as AppReclamos_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/Reclamo/',include(AppReclamos_urls))
+    path('api/Reclamo/',include(AppReclamos_urls)),
 ]

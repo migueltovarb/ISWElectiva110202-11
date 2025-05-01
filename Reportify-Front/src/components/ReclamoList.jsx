@@ -55,6 +55,24 @@ const ClaimList = () => {
     setShowForm(false); 
   };
 
+  const exportPDF = () => {
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/Reclamo/exportar-pdf`, {
+        responseType: "blob",
+      })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "reclamos.pdf");
+        document.body.appendChild(link);
+        link.click();
+      })
+      .catch(() => {
+        alert("Error al exportar el PDF.");
+      });
+  };
+
   const filteredClaims = claims.filter((claim) =>
     claim.asunto?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     claim.descripcion?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -81,17 +99,28 @@ const ClaimList = () => {
         Tus Reclamos
       </h1>
 
-      <div className="flex justify-end mb-6">
-        <button
-          onClick={() => {
-            setShowForm(!showForm);
-            setClaimSeleccionado(null);
-          }}
-          className="bg-[#3f622e] hover:bg-[#325224] text-white px-6 py-2 rounded shadow-md"
-        >
-          {showForm ? "Volver a la Lista" : "Agregar Reclamo"}
-        </button>
-      </div>
+      {!showForm && (
+  <div className="flex justify-between mb-6">
+    {/* Botón Exportar PDF */}
+    <button
+      onClick={exportPDF}
+      className="bg-[#3f622e] hover:bg-[#325224] text-white px-6 py-2 rounded shadow-md"
+    >
+      Exportar PDF
+    </button>
+
+    {/* Botón Agregar Reclamo */}
+    <button
+      onClick={() => {
+        setShowForm(true);
+        setClaimSeleccionado(null);
+      }}
+      className="bg-[#3f622e] hover:bg-[#325224] text-white px-6 py-2 rounded shadow-md"
+    >
+      Agregar Reclamo
+    </button>
+  </div>
+)}
 
       {!showForm && (
         <div className="mb-8">
