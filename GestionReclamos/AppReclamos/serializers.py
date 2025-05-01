@@ -7,7 +7,7 @@ class comentario_serializer(serializers.ModelSerializer):
         fields = ['id', 'reclamo', 'texto', 'fecha_comentario']
 
 class reclamo_serializer(serializers.ModelSerializer):
-    comentarios = comentario_serializer(many=True, read_only=True)  # Relación con Comentarios
+    comentarios = comentario_serializer(many=True, read_only=True)  
 
     class Meta:
         model = Reclamo
