@@ -88,24 +88,24 @@ const VisualizarReclamo = ({ claim, onBack, onComentarioGuardado }) => {
             Agrega comentario adicional:
           </label>
           <textarea
-            className="w-full border border-gray-300 rounded-md p-3 resize-none focus:outline-none focus:ring-2 focus:ring-green-600"
+            className="w-full border border-gray-300 rounded-md p-3 resize-none focus:outline-none focus:ring-2 focus:ring-[#325224]"
             rows="4"
             value={comentario}
             onChange={(e) => setComentario(e.target.value)}
-            placeholder="Es importante para mí recibir este pedido a la brevedad posible..."
+            placeholder="Agrega un comentario adicional..."
           />
         </div>
 
         <div className="flex justify-end mt-6 space-x-4">
           <button
             onClick={handleGuardarComentario}
-            className="bg-green-700 text-white px-6 py-2 rounded shadow hover:bg-green-800 transition"
+            className="bg-[#325224] text-white px-6 py-2 rounded shadow"
           >
             Agregar
           </button>
           <button
             onClick={onBack}
-            className="bg-green-700 text-white px-6 py-2 rounded shadow hover:bg-green-800 transition"
+            className="bg-[#325224] text-white px-6 py-2 rounded shadow "
           >
             Cancelar
           </button>

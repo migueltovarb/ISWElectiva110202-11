@@ -77,7 +77,6 @@ const ClaimList = () => {
 
   return (
     <div className="max-w-5xl mx-auto mt-10 px-6">
-      <h1 className="text-2xs text-green-800">Bienvenidos al Sistema de Reclamos</h1>
       <h1 className="text-3xl font-serif font-semibold text-gray-800 mb-8 border-b pb-2">
         Tus Reclamos
       </h1>
@@ -101,7 +100,7 @@ const ClaimList = () => {
             placeholder="Buscar por asunto, empresa o descripción..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-green-300"
+            className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-[#325224]"
           />
         </div>
       )}
