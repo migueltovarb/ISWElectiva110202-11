@@ -1,0 +1,40 @@
+# Ignorar el entorno virtual
+venv/
+
+# Ignorar los archivos de compilación de Python
+*.pyc
+_pycache_/
+
+# Ignorar node_modules (si usas React en el frontend)
+client/node_modules/
+
+# Ignorar archivos de configuración locales
+.env
+
+# Byte-compiled / optimized / DLL files
+_pycache_/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
