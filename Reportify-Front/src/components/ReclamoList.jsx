@@ -71,7 +71,7 @@ const ClaimList = () => {
 
   const exportPDF = () => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/Reclamo/exportar-pdf`, {
+      .get(`${import.meta.env.VITE_API_URL}/Reclamo/exportar-pdf/`, {
         responseType: "blob",
       })
       .then((response) => {
