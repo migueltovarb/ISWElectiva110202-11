@@ -11,7 +11,7 @@ export default function EvidenceFile({ url }) {
   try {
     fullUrl = url.startsWith('http') ? url : new URL(url, baseUrl).href;
   } catch {
-    // fallback si URL es inválida
+    
     fullUrl = url;
   }
 

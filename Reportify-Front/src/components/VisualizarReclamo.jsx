@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import EvidenceFile from "./EvidenceFile"; // Asegúrate que la ruta sea correcta
+import EvidenceFile from "./EvidenceFile"; 
 
 const VisualizarReclamo = ({ claim, onBack, onComentarioGuardado }) => {
   const [comentario, setComentario] = useState("");

@@ -12,7 +12,7 @@ const ClaimList = () => {
   const [asunto, setAsunto] = useState("");
   const [empresa, setEmpresa] = useState("Servidentrega");
   const [descripcion, setDescripcion] = useState("");
-  const [evidencia, setEvidencia] = useState(null); // Estado para el archivo
+  const [evidencia, setEvidencia] = useState(null); 
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -71,7 +71,7 @@ const ClaimList = () => {
 
   const exportPDF = () => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/Reclamo/exportar-pdf`, {
+      .get(`${import.meta.env.VITE_API_URL}/Reclamo/exportar-pdf/`, {
         responseType: "blob",
       })
       .then((response) => {
