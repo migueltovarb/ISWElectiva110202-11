@@ -12,6 +12,7 @@ const ClaimList = () => {
   const [asunto, setAsunto] = useState("");
   const [empresa, setEmpresa] = useState("Servidentrega");
   const [descripcion, setDescripcion] = useState("");
+  const [evidencia, setEvidencia] = useState(null); // Estado para el archivo
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -33,15 +34,27 @@ const ClaimList = () => {
 
   const handleCreate = (e) => {
     e.preventDefault();
-    const nuevoReclamo = { asunto, empresa, descripcion };
+
+    const formData = new FormData();
+    formData.append("asunto", asunto);
+    formData.append("empresa", empresa);
+    formData.append("descripcion", descripcion);
+    if (evidencia) {
+      formData.append("evidencia", evidencia);
+    }
 
     axios
-      .post(`${import.meta.env.VITE_API_URL}/Reclamo/crear`, nuevoReclamo)
+      .post(`${import.meta.env.VITE_API_URL}/Reclamo/crear`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
       .then(() => {
         fetchClaims();
         setAsunto("");
         setEmpresa("Servidentrega");
         setDescripcion("");
+        setEvidencia(null);
         setShowForm(false);
       })
       .catch(() => {
@@ -52,7 +65,8 @@ const ClaimList = () => {
   const handleCancel = () => {
     setAsunto("");
     setDescripcion("");
-    setShowForm(false); 
+    setEvidencia(null);
+    setShowForm(false);
   };
 
   const exportPDF = () => {
@@ -100,27 +114,25 @@ const ClaimList = () => {
       </h1>
 
       {!showForm && (
-  <div className="flex justify-between mb-6">
-    {/* Botón Exportar PDF */}
-    <button
-      onClick={exportPDF}
-      className="bg-[#3f622e] hover:bg-[#325224] text-white px-6 py-2 rounded shadow-md"
-    >
-      Exportar PDF
-    </button>
+        <div className="flex justify-between mb-6">
+          <button
+            onClick={exportPDF}
+            className="bg-[#3f622e] hover:bg-[#325224] text-white px-6 py-2 rounded shadow-md"
+          >
+            Exportar PDF
+          </button>
 
-    {/* Botón Agregar Reclamo */}
-    <button
-      onClick={() => {
-        setShowForm(true);
-        setClaimSeleccionado(null);
-      }}
-      className="bg-[#3f622e] hover:bg-[#325224] text-white px-6 py-2 rounded shadow-md"
-    >
-      Agregar Reclamo
-    </button>
-  </div>
-)}
+          <button
+            onClick={() => {
+              setShowForm(true);
+              setClaimSeleccionado(null);
+            }}
+            className="bg-[#3f622e] hover:bg-[#325224] text-white px-6 py-2 rounded shadow-md"
+          >
+            Agregar Reclamo
+          </button>
+        </div>
+      )}
 
       {!showForm && (
         <div className="mb-8">
@@ -135,7 +147,7 @@ const ClaimList = () => {
       )}
 
       {showForm ? (
-        <form onSubmit={handleCreate} className="space-y-6">
+        <form onSubmit={handleCreate} className="space-y-6" encType="multipart/form-data">
           <div>
             <label className="block text-gray-700 font-medium mb-1">Asunto</label>
             <input
@@ -174,6 +186,17 @@ const ClaimList = () => {
                 whiteSpace: "pre-wrap",
                 wordBreak: "break-word",
               }}
+            />
+          </div>
+
+          {/* Input para evidencia */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Evidencia (imagen o archivo)</label>
+            <input
+              type="file"
+              accept="image/*,application/pdf"
+              onChange={(e) => setEvidencia(e.target.files[0])}
+              className="w-full border border-gray-300 p-2 rounded"
             />
           </div>
 

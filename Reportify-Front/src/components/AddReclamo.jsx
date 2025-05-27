@@ -5,27 +5,35 @@ const AddReclamo = ({ onReclamoCreado }) => {
   const [asunto, setAsunto] = useState("");
   const [empresa, setEmpresa] = useState("Servidentrega");
   const [descripcion, setDescripcion] = useState("");
+  const [evidencia, setEvidencia] = useState(null); // Estado para archivo
   const [mensaje, setMensaje] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const nuevoReclamo = {
-      asunto: asunto,
-      empresa: empresa,
-      descripcion: descripcion,
-    };
+    const formData = new FormData();
+    formData.append("asunto", asunto);
+    formData.append("empresa", empresa);
+    formData.append("descripcion", descripcion);
+    if (evidencia) {
+      formData.append("evidencia", evidencia); // clave debe coincidir con lo que espera tu backend
+    }
 
     axios
-      .post(`${import.meta.env.VITE_API_URL}/Reclamo/crear`, nuevoReclamo)
+      .post(`${import.meta.env.VITE_API_URL}/Reclamo/crear`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
       .then((response) => {
         setMensaje("Reclamo creado exitosamente.");
         setAsunto("");
         setEmpresa("Servidentrega");
         setDescripcion("");
+        setEvidencia(null);
 
         if (onReclamoCreado) {
-          onReclamoCreado(); 
+          onReclamoCreado();
         }
       })
       .catch((error) => {
@@ -40,7 +48,7 @@ const AddReclamo = ({ onReclamoCreado }) => {
 
       {mensaje && <p className="text-sm text-center text-blue-500">{mensaje}</p>}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
         <div>
           <label className="block text-gray-700">Asunto</label>
           <input
@@ -73,6 +81,17 @@ const AddReclamo = ({ onReclamoCreado }) => {
             className="w-full border border-gray-300 rounded p-2"
             rows="4"
             required
+          />
+        </div>
+
+        {/* Aquí agregamos el input para evidencia */}
+        <div>
+          <label className="block text-gray-700">Evidencia (imagen o archivo)</label>
+          <input
+            type="file"
+            accept="image/*,application/pdf"
+            onChange={(e) => setEvidencia(e.target.files[0])}
+            className="w-full border border-gray-300 rounded p-2"
           />
         </div>
 

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import EvidenceFile from "./EvidenceFile"; // Asegúrate que la ruta sea correcta
 
 const VisualizarReclamo = ({ claim, onBack, onComentarioGuardado }) => {
   const [comentario, setComentario] = useState("");
@@ -16,11 +17,10 @@ const VisualizarReclamo = ({ claim, onBack, onComentarioGuardado }) => {
         fecha: fechaComentario,
       })
       .then((res) => {
-
         if (res.data && res.data.comentarios) {
-          setComentarios(res.data.comentarios); 
+          setComentarios(res.data.comentarios);
           setComentario("");
-          onComentarioGuardado(); 
+          onComentarioGuardado();
         } else {
           alert("No se pudieron guardar los comentarios correctamente.");
         }
@@ -37,11 +37,11 @@ const VisualizarReclamo = ({ claim, onBack, onComentarioGuardado }) => {
       </h1>
 
       <div className="bg-white shadow-md rounded-lg p-6">
-        {}
+        {/* Empresa */}
         <p className="text-lg text-gray-800 font-semibold mb-1">Empresa:</p>
         <p className="text-lg text-gray-700 mb-4">{claim.empresa}</p>
 
-        {}
+        {/* Asunto */}
         <h2
           className="text-xl font-bold text-gray-900 mb-4"
           style={{
@@ -54,7 +54,7 @@ const VisualizarReclamo = ({ claim, onBack, onComentarioGuardado }) => {
           <span className="font-semibold">Asunto:</span> {claim.asunto}
         </h2>
 
-        {}
+        {/* Descripción */}
         <p
           className="text-gray-700 leading-relaxed mb-6"
           style={{
@@ -67,7 +67,13 @@ const VisualizarReclamo = ({ claim, onBack, onComentarioGuardado }) => {
           <span className="font-semibold">Descripción:</span> {claim.descripcion}
         </p>
 
-        {}
+        {/* Evidencia adjunta */}
+        <div className="mb-6">
+          <h3 className="font-semibold text-gray-800">Evidencia adjunta:</h3>
+          <EvidenceFile url={claim.evidencia} />
+        </div>
+
+        {/* Comentarios */}
         <div className="mt-8">
           <h3 className="font-semibold text-gray-800">Comentarios:</h3>
           <ul className="space-y-4 mt-4">
@@ -83,7 +89,8 @@ const VisualizarReclamo = ({ claim, onBack, onComentarioGuardado }) => {
           </ul>
         </div>
 
-        <div className="mb-4">
+        {/* Agregar comentario */}
+        <div className="mb-4 mt-6">
           <label className="block text-gray-800 font-semibold mb-2">
             Agrega comentario adicional:
           </label>
@@ -96,6 +103,7 @@ const VisualizarReclamo = ({ claim, onBack, onComentarioGuardado }) => {
           />
         </div>
 
+        {/* Botones */}
         <div className="flex justify-end mt-6 space-x-4">
           <button
             onClick={handleGuardarComentario}
@@ -105,7 +113,7 @@ const VisualizarReclamo = ({ claim, onBack, onComentarioGuardado }) => {
           </button>
           <button
             onClick={onBack}
-            className="bg-[#325224] text-white px-6 py-2 rounded shadow "
+            className="bg-[#325224] text-white px-6 py-2 rounded shadow"
           >
             Cancelar
           </button>
