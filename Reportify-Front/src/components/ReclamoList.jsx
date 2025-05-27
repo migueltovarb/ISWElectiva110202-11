@@ -12,7 +12,7 @@ const ClaimList = () => {
   const [asunto, setAsunto] = useState("");
   const [empresa, setEmpresa] = useState("Servidentrega");
   const [descripcion, setDescripcion] = useState("");
-  const [evidencia, setEvidencia] = useState(null); // Estado para el archivo
+  const [evidencia, setEvidencia] = useState(null); 
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {

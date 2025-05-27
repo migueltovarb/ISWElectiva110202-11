@@ -5,7 +5,7 @@ const AddReclamo = ({ onReclamoCreado }) => {
   const [asunto, setAsunto] = useState("");
   const [empresa, setEmpresa] = useState("Servidentrega");
   const [descripcion, setDescripcion] = useState("");
-  const [evidencia, setEvidencia] = useState(null); // Estado para archivo
+  const [evidencia, setEvidencia] = useState(null); 
   const [mensaje, setMensaje] = useState("");
 
   const handleSubmit = (e) => {
@@ -16,7 +16,7 @@ const AddReclamo = ({ onReclamoCreado }) => {
     formData.append("empresa", empresa);
     formData.append("descripcion", descripcion);
     if (evidencia) {
-      formData.append("evidencia", evidencia); // clave debe coincidir con lo que espera tu backend
+      formData.append("evidencia", evidencia); 
     }
 
     axios
