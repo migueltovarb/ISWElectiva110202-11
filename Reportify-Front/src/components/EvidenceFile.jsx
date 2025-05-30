@@ -1,5 +1,14 @@
 import React from 'react';
 
+function isValidAbsoluteUrl(url) {
+  try {
+    const u = new URL(url);
+    return u.protocol === 'http:' || u.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 export default function EvidenceFile({ url }) {
   const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -8,11 +17,14 @@ export default function EvidenceFile({ url }) {
   }
 
   let fullUrl;
-  try {
-    fullUrl = url.startsWith('http') ? url : new URL(url, baseUrl).href;
-  } catch {
-    
+  if (isValidAbsoluteUrl(url)) {
     fullUrl = url;
+  } else {
+    try {
+      fullUrl = new URL(url, baseUrl).href;
+    } catch {
+      fullUrl = url;
+    }
   }
 
   const fileName = fullUrl.split('/').pop();

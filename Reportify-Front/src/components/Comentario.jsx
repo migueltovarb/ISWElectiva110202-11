@@ -31,10 +31,12 @@ const Comentario = ({ claim }) => {
       <p><strong>Fecha de creación:</strong> {claim.fecha_creacion}</p>
       <p><strong>Empresa:</strong> {claim.empresa}</p>
 
-      {}
       <div className="mt-4">
-        <label className="block text-gray-700">Comentario Adicional</label>
+        <label htmlFor="comentarioAdicional" className="block text-gray-700">
+          Comentario Adicional
+        </label>
         <textarea
+          id="comentarioAdicional"
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           className="w-full border p-2 rounded"

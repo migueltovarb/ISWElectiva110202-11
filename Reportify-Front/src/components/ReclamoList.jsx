@@ -10,9 +10,9 @@ const ClaimList = () => {
   const [claimSeleccionado, setClaimSeleccionado] = useState(null);
 
   const [asunto, setAsunto] = useState("");
-  const [empresa, setEmpresa] = useState("Servidentrega");
+  const [empresa, setEmpresa] = useState("Servientrega");
   const [descripcion, setDescripcion] = useState("");
-  const [evidencia, setEvidencia] = useState(null); 
+  const [evidencia, setEvidencia] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -20,8 +20,9 @@ const ClaimList = () => {
   }, []);
 
   const fetchClaims = () => {
+    setLoading(true);
     axios
-      .get(`${import.meta.env.VITE_API_URL}/Reclamo/listar-reclamos`)
+      .get(`${import.meta.env.VITE_API_URL}/Reclamo/listar-reclamos/`)
       .then((response) => {
         setClaims(response.data);
         setLoading(false);
@@ -34,6 +35,11 @@ const ClaimList = () => {
 
   const handleCreate = (e) => {
     e.preventDefault();
+
+    if (!asunto.trim() || !descripcion.trim()) {
+      alert("Por favor, completa todos los campos obligatorios.");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("asunto", asunto);
@@ -52,7 +58,7 @@ const ClaimList = () => {
       .then(() => {
         fetchClaims();
         setAsunto("");
-        setEmpresa("Servidentrega");
+        setEmpresa("Servientrega");
         setDescripcion("");
         setEvidencia(null);
         setShowForm(false);
@@ -88,10 +94,8 @@ const ClaimList = () => {
   };
 
   const filteredClaims = claims.filter((claim) =>
-    claim.asunto?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    claim.descripcion?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    claim.empresa?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    claim.titulo?.toLowerCase().includes(searchQuery.toLowerCase())
+    [claim.asunto, claim.descripcion, claim.empresa, claim.titulo]
+      .some((text) => text?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   if (loading) return <p className="text-center text-gray-500">Cargando reclamos...</p>;
@@ -166,7 +170,7 @@ const ClaimList = () => {
               onChange={(e) => setEmpresa(e.target.value)}
               className="w-full border border-gray-300 p-2 rounded"
             >
-              <option value="Servidentrega">Servientrega</option>
+              <option value="Servientrega">Servientrega</option>
               <option value="InterRapidisimo">InterRapidisimo</option>
               <option value="Star Store">Star Store</option>
             </select>
@@ -181,17 +185,16 @@ const ClaimList = () => {
               rows="4"
               required
               style={{
+                whiteSpace: "pre-wrap",
                 wordWrap: "break-word",
                 overflowWrap: "break-word",
-                whiteSpace: "pre-wrap",
                 wordBreak: "break-word",
               }}
             />
           </div>
 
-          {/* Input para evidencia */}
           <div>
-            <label className="block text-gray-700 font-medium mb-1">Evidencia (imagen o archivo)</label>
+            <label className="block text-gray-700 font-medium mb-1">Evidencia (imagen o PDF)</label>
             <input
               type="file"
               accept="image/*,application/pdf"
@@ -235,16 +238,7 @@ const ClaimList = () => {
                 <span className="text-sm text-gray-500 font-mono">ID {claim.id}</span>
               </div>
 
-              <p
-                className="text-gray-600 mt-2"
-                style={{
-                  wordWrap: "break-word",
-                  overflowWrap: "break-word",
-                  wordBreak: "break-word",
-                }}
-              >
-                {claim.descripcion}
-              </p>
+              <p className="text-gray-600 mt-2">{claim.descripcion}</p>
 
               <div className="flex justify-between items-center mt-4">
                 <button
